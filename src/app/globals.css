@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { -webkit-font-smoothing: antialiased; }
+
+.cat-info  { @apply bg-indigo-100 text-indigo-800; }
+.cat-static { @apply bg-amber-100 text-amber-800; }
+.cat-ai    { @apply bg-violet-100 text-violet-800; }
