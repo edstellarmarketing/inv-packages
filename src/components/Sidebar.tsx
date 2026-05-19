@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCustomCourses } from '@/hooks/useCustomCourses'
-import { builtInCourses } from '@/data/courses'
 import type { CourseCategory } from '@/types'
 
 const CATEGORY_FILTERS: Array<{ label: string; value: CourseCategory | 'All' }> = [
@@ -38,10 +37,8 @@ const CHILD_IDS = new Set(Object.values(COMBO_CHILDREN).flat())
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const { customCourses, deleteCourse } = useCustomCourses()
+  const { allCourses, deleteCourse } = useCustomCourses()
   const [activeCategory, setActiveCategory] = useState<CourseCategory | 'All'>('All')
-
-  const allCourses = [...builtInCourses, ...customCourses]
 
   const filteredCourses =
     activeCategory === 'All'
@@ -86,7 +83,9 @@ export default function Sidebar() {
         </Link>
         {course.isCustom && (
           <button
-            onClick={() => deleteCourse(course.id)}
+            onClick={() => {
+              deleteCourse(course.id).catch((err) => alert((err as Error).message))
+            }}
             title="Delete course"
             className="absolute right-1 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center justify-center w-5 h-5 rounded text-ink3 hover:text-red-500 hover:bg-red-50 transition-colors"
           >

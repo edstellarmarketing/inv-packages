@@ -26,3 +26,9 @@ Thumbs.db
 
 # Claude Code session state
 .claude/
+
+# TypeScript incremental build artifact
+tsconfig.tsbuildinfo
+
+# Local screenshots / scratch
+dbschema.png

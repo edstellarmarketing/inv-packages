@@ -1,18 +1,26 @@
 'use client'
 
-import { useParams, notFound } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useCustomCourses } from '@/hooks/useCustomCourses'
 import PackageGrid from '@/components/PackageGrid'
+import CourseFeedback from '@/components/CourseFeedback'
 import Link from 'next/link'
 
 export default function CoursePage() {
   const params = useParams()
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
-  const { getCourse, deleteCourse, allCourses } = useCustomCourses()
+  const { getCourse, deleteCourse, loading } = useCustomCourses()
 
   const course = getCourse(slug)
 
   if (!course) {
+    if (loading) {
+      return (
+        <div className="px-8 py-10">
+          <p className="text-ink3 text-sm">Loading…</p>
+        </div>
+      )
+    }
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <p className="text-ink2 text-lg">Course not found.</p>
@@ -37,10 +45,14 @@ export default function CoursePage() {
           </div>
           {course.isCustom && (
             <button
-              onClick={() => {
+              onClick={async () => {
                 if (confirm(`Delete "${course.title}"? This cannot be undone.`)) {
-                  deleteCourse(course.id)
-                  window.location.href = '/courses/pmp'
+                  try {
+                    await deleteCourse(course.id)
+                    window.location.href = '/courses/pmp'
+                  } catch (err) {
+                    alert((err as Error).message)
+                  }
                 }
               }}
               className="shrink-0 text-sm text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-3 py-1.5 rounded-lg transition-colors"
@@ -100,6 +112,8 @@ export default function CoursePage() {
           </Link>
         </div>
       )}
+
+      <CourseFeedback courseId={course.id} courseTitle={course.title} />
     </div>
   )
 }
